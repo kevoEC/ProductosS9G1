@@ -1,24 +1,50 @@
+/**
+ * Clase que representa un Producto con un nombre y un precio.
+ */
 public class Producto {
 
-  private String nombre;
-  private double precio;
+    /**
+     * Nombre del producto.
+     */
+    private String nombre;
 
-  public Producto(String nombre, double precio) {
-    if (nombre == null || nombre.isEmpty()) {
-      throw new IllegalArgumentException("El nombre del producto no puede ser nulo o vacío."); // Violación: Falta comentario explicativo
+    /**
+     * Precio del producto.
+     */
+    private double precio;
+
+    /**
+     * Constructor de la clase Producto.
+     * 
+     * @param nombre Nombre del producto.
+     * @param precio Precio del producto.
+     */
+    public Producto(final String nombre, final double precio) {
+        if (nombre == null || nombre.isEmpty()) {
+            throw new IllegalArgumentException("El nombre del producto no puede ser nulo o vacío.");
+        }
+        if (precio < 0) { // Usar constante para el valor 0
+            throw new IllegalArgumentException("El precio no puede ser negativo.");
+        }
+        this.nombre = nombre;
+        this.precio = precio;
     }
-    if (precio < 0) { // Violación: Número mágico, 0 debería ser una constante
-      throw new IllegalArgumentException("El precio no puede ser negativo.");
+
+    /**
+     * Obtiene el nombre del producto.
+     * 
+     * @return Nombre del producto.
+     */
+    public String getNombre() {
+        return nombre;
     }
-    this.nombre = nombre;
-    this.precio = precio;
-  }
 
-  public String getNombre() {
-    return nombre;
-  }
-
-  public double getPrecio() {
-    return precio;
-  }
+    /**
+     * Obtiene el precio del producto.
+     * 
+     * @return Precio del producto.
+     */
+    public double getPrecio() {
+        return precio;
+    }
 }

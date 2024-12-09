@@ -1,24 +1,46 @@
 import java.util.List;
 import java.util.ArrayList;
 
-public class gestorProductos { // Violación: El nombre de la clase debería ser GestorProductos
+/**
+ * Clase encargada de gestionar los productos.
+ */
+public class GestorProductos {
 
-  private List<Producto> productos = new ArrayList<Producto>(); // Violación: Línea demasiado larga
+  /**
+   * Lista de productos gestionados.
+   */
+  private List<Producto> productos = new ArrayList<Producto>();
 
-  public void agregarproducto(Producto producto) { // Violación: El método debería ser agregarProducto
-    if (producto == null) { // Violación: Indentación incorrecta (debería estar con 4 espacios)
+  /**
+   * Agrega un producto a la lista de productos.
+   * 
+   * @param producto Producto a agregar.
+   */
+  public void agregarProducto(final Producto producto) {
+    if (producto == null) {
       System.out.println("Producto nulo no puede ser agregado.");
-      return; // Violación: Falta un comentario explicativo
+      return; // Violación: Falta comentario explicativo
     }
     productos.add(producto);
   }
 
+  /**
+   * Obtiene el total de productos en la lista.
+   * 
+   * @return El número total de productos.
+   */
   public int obtenerTotalProductos() {
     return productos.size();
   }
 
-  public void eliminarProducto (int codigo) { // Violación: Espacio innecesario antes del paréntesis
-    if (codigo < 0 || codigo >= productos.size()) { // Violación: Número mágico, 0 debería ser una constante
+  /**
+   * Elimina un producto de la lista por su índice.
+   * 
+   * @param codigo Índice del producto a eliminar.
+   */
+  public void eliminarProducto(final int codigo) {
+    final int TAMANO_LISTA = 0; // Usamos constante para el índice cero
+    if (codigo < TAMANO_LISTA || codigo >= productos.size()) {
       System.out.println("Índice fuera de rango.");
       return;
     }

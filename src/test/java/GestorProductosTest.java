@@ -2,8 +2,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Clase de prueba para la clase GestorProductos.
+ */
 public class GestorProductosTest {
 
+  /**
+   * Test para agregar productos a la lista.
+   */
   @Test
   public void testAgregarProducto() {
     GestorProductos gestor = new GestorProductos();
@@ -16,6 +22,9 @@ public class GestorProductosTest {
     assertEquals(2, gestor.obtenerTotalProductos(), "Debería haber 2 productos");
   }
 
+  /**
+   * Test para eliminar productos de la lista.
+   */
   @Test
   public void testEliminarProducto() {
     GestorProductos gestor = new GestorProductos();
@@ -28,6 +37,9 @@ public class GestorProductosTest {
     assertEquals(0, gestor.obtenerTotalProductos(), "Debería haber 0 productos después de eliminar");
   }
 
+  /**
+   * Test para intentar agregar un producto nulo.
+   */
   @Test
   public void testAgregarProductoNulo() {
     GestorProductos gestor = new GestorProductos();
