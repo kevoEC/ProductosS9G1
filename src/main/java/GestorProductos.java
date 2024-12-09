@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Clase encargada de gestionar los productos.
@@ -8,25 +9,22 @@ public class GestorProductos {
 
   /**
    * Lista de productos gestionados.
+   * Usamos CopyOnWriteArrayList para evitar problemas de concurrencia en entornos
+   * multihilo.
    */
-  private List<Producto> productos = new ArrayList<Producto>(); // Posible fallo de concurrencia si se accede desde
-                                                                // múltiples
-  // hilos
+  private List<Producto> productos = new CopyOnWriteArrayList<Producto>();
 
   /**
    * Agrega un producto a la lista de productos.
    * 
    * @param producto Producto a agregar.
    */
-  public void agregarProducto(final Producto producto) {
+  public synchronized void agregarProducto(final Producto producto) {
     if (producto == null) {
       System.out.println("Producto nulo no puede ser agregado.");
-      return; // Si no se controla la salida de este método, se podría modificar la lista
-              // innecesariamente.
+      return;
     }
     productos.add(producto);
-
-    // Potencial fallo: No comprobar si la lista ha cambiado después de agregar.
   }
 
   /**
@@ -44,36 +42,47 @@ public class GestorProductos {
    * @param codigo Índice del producto a eliminar.
    */
   public void eliminarProducto(final int codigo) {
-    final int TAMANO_LISTA = 0; // Número mágico (puede generar advertencia en SpotBugs).
-    if (codigo < TAMANO_LISTA || codigo >= productos.size()) {
+    if (codigo < 0 || codigo >= productos.size()) {
       System.out.println("Índice fuera de rango.");
-      return; // El índice fuera de rango puede generar NullPointerException si no se
-              // comprueba correctamente.
+      return;
     }
-    productos.remove(codigo); // Aquí hay un problema si la lista es modificada durante la ejecución de otro
-                              // hilo.
+    productos.remove(codigo);
   }
 
   /**
-   * Método que no cierra correctamente el recurso (Simulando un problema de
-   * recurso no cerrado)
+   * Método con un error de tipo introducido en el uso de genéricos.
    */
-  public void metodoQueDeberiaCerrarRecurso() {
-    // Creamos un recurso (simulado)
-    List<String> recursos = new ArrayList<>();
-    recursos.add("Recurso");
+  public void errorDeTipo() {
+    // Introducimos un error de tipo:
+    List<String> listaDeStrings = new ArrayList<String>();
+    listaDeStrings.add("Cadena válida");
 
-    // SpotBugs puede detectar que el recurso no es cerrado
+    // Intentamos asignar la lista de strings a una lista de productos (error de
+    // compilación)
+    List<Producto> listaErronea = (List<Producto>) listaDeStrings; // Error de tipo
+
+
+    listaErronea.add(new Producto("Producto erróneo", 20.0)); // Esto no tiene sentido
+  }
+}
+
+/**
+ * Clase Producto para representar un producto.
+ */
+class Producto {
+  private String nombre;
+  private double precio;
+
+  public Producto(String nombre, double precio) {
+    this.nombre = nombre;
+    this.precio = precio;
   }
 
-  /**
-   * Método con código redundante que puede confundir
-   */
-  public void codigoRedundante() {
-    List<Producto> listaDeProductos = new ArrayList<>();
-    listaDeProductos.add(new Producto("Producto de prueba", 10.0));
+  public String getNombre() {
+    return nombre;
+  }
 
-    // SpotBugs podría detectar que estamos creando una nueva lista sin necesidad
-    listaDeProductos = new ArrayList<>(); // Creación innecesaria de lista.
+  public double getPrecio() {
+    return precio;
   }
 }
