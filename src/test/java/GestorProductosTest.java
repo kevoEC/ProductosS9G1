@@ -14,7 +14,6 @@ public class GestorProductosTest {
     gestor.agregarProducto(producto2);
 
     assertEquals(2, gestor.obtenerTotalProductos(), "Debería haber 2 productos");
-
   }
 
   @Test
