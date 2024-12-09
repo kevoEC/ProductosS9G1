@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -12,24 +11,25 @@ public class GestorProductos {
    * Usamos CopyOnWriteArrayList para evitar problemas de concurrencia en entornos
    * multihilo.
    */
-  private List<Producto> productos = new CopyOnWriteArrayList<Producto>();
+  private final List<Producto> productos = new CopyOnWriteArrayList<Producto>();
 
   /**
    * Agrega un producto a la lista de productos.
-   * 
+   *
    * @param producto Producto a agregar.
+   * @throws IllegalArgumentException Si el producto es nulo.
    */
   public synchronized void agregarProducto(final Producto producto) {
     if (producto == null) {
-      System.out.println("Producto nulo no puede ser agregado.");
-      return;
+      throw new IllegalArgumentException("El producto no puede ser nulo.");
     }
     productos.add(producto);
+    System.out.println("Producto agregado exitosamente: " + producto.getNombre());
   }
 
   /**
    * Obtiene el total de productos en la lista.
-   * 
+   *
    * @return El número total de productos.
    */
   public int obtenerTotalProductos() {
@@ -38,31 +38,33 @@ public class GestorProductos {
 
   /**
    * Elimina un producto de la lista por su índice.
-   * 
+   *
    * @param codigo Índice del producto a eliminar.
+   * @throws IndexOutOfBoundsException Si el índice está fuera de rango.
    */
-  public void eliminarProducto(final int codigo) {
+  public synchronized void eliminarProducto(final int codigo) {
     if (codigo < 0 || codigo >= productos.size()) {
-      System.out.println("Índice fuera de rango.");
-      return;
+      throw new IndexOutOfBoundsException("Índice fuera de rango: " + codigo);
     }
-    productos.remove(codigo);
+    Producto productoEliminado = productos.remove(codigo);
+    System.out.println("Producto eliminado: " + productoEliminado.getNombre());
   }
 
   /**
-   * Método con un error de tipo introducido en el uso de genéricos.
+   * Obtiene una representación en cadena de los productos en la lista.
+   *
+   * @return Representación en cadena de los productos.
    */
-  public void errorDeTipo() {
-    // Introducimos un error de tipo:
-    List<String> listaDeStrings = new ArrayList<String>();
-    listaDeStrings.add("Cadena válida");
-
-    // Intentamos asignar la lista de strings a una lista de productos (error de
-    // compilación)
-    List<Producto> listaErronea = (List<Producto>) listaDeStrings; // Error de tipo
-
-
-    listaErronea.add(new Producto("Producto erróneo", 20.0)); // Esto no tiene sentido
+  public String listarProductos() {
+    if (productos.isEmpty()) {
+      return "No hay productos en la lista.";
+    }
+    StringBuilder sb = new StringBuilder("Productos:\n");
+    for (int i = 0; i < productos.size(); i++) {
+      Producto producto = productos.get(i);
+      sb.append(i).append(". ").append(producto.getNombre()).append(" - $").append(producto.getPrecio()).append("\n");
+    }
+    return sb.toString();
   }
 }
 
@@ -70,10 +72,24 @@ public class GestorProductos {
  * Clase Producto para representar un producto.
  */
 class Producto {
-  private String nombre;
-  private double precio;
+  private final String nombre;
+  private final double precio;
 
+  /**
+   * Constructor del producto.
+   *
+   * @param nombre Nombre del producto.
+   * @param precio Precio del producto.
+   * @throws IllegalArgumentException Si el nombre es nulo o vacío, o si el precio
+   *                                  es negativo.
+   */
   public Producto(String nombre, double precio) {
+    if (nombre == null || nombre.trim().isEmpty()) {
+      throw new IllegalArgumentException("El nombre del producto no puede ser nulo o vacío.");
+    }
+    if (precio < 0) {
+      throw new IllegalArgumentException("El precio no puede ser negativo.");
+    }
     this.nombre = nombre;
     this.precio = precio;
   }
@@ -84,5 +100,10 @@ class Producto {
 
   public double getPrecio() {
     return precio;
+  }
+
+  @Override
+  public String toString() {
+    return nombre + " ($" + precio + ")";
   }
 }
