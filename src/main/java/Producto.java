@@ -1,50 +1,39 @@
 /**
- * Clase que representa un Producto con un nombre y un precio.
+ * Clase Producto para representar un producto.
  */
-public class Producto {
+class Producto {
+  private final String nombre;
+  private final double precio;
 
-    /**
-     * Nombre del producto.
-     */
-    private String nombre;
-
-    /**
-     * Precio del producto.
-     */
-    private double precio;
-
-    /**
-     * Constructor de la clase Producto.
-     * 
-     * @param nombre Nombre del producto.
-     * @param precio Precio del producto.
-     */
-    public Producto(final String nombre, final double precio) {
-        if (nombre == null || nombre.isEmpty()) {
-            throw new IllegalArgumentException("El nombre del producto no puede ser nulo o vacío.");
-        }
-        if (precio < 0) { // Usar constante para el valor 0
-            throw new IllegalArgumentException("El precio no puede ser negativo.");
-        }
-        this.nombre = nombre;
-        this.precio = precio;
+  /**
+   * Constructor del producto.
+   *
+   * @param nombre Nombre del producto.
+   * @param precio Precio del producto.
+   * @throws IllegalArgumentException Si el nombre es nulo o vacío, o si el precio
+   *                                  es negativo.
+   */
+  public Producto(String nombre, double precio) {
+    if (nombre == null || nombre.trim().isEmpty()) {
+      throw new IllegalArgumentException("El nombre del producto no puede ser nulo o vacío.");
     }
-
-    /**
-     * Obtiene el nombre del producto.
-     * 
-     * @return Nombre del producto.
-     */
-    public String getNombre() {
-        return nombre;
+    if (precio < 0) {
+      throw new IllegalArgumentException("El precio no puede ser negativo.");
     }
+    this.nombre = nombre;
+    this.precio = precio;
+  }
 
-    /**
-     * Obtiene el precio del producto.
-     * 
-     * @return Precio del producto.
-     */
-    public double getPrecio() {
-        return precio;
-    }
+  public String getNombre() {
+    return nombre;
+  }
+
+  public double getPrecio() {
+    return precio;
+  }
+
+  @Override
+  public String toString() {
+    return nombre + " ($" + precio + ")";
+  }
 }
